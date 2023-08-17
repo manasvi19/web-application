@@ -1,45 +1,32 @@
 pipeline {
     agent any
 
-    environment {
-        DOTNET_CLI_TELEMETRY_OPTOUT = '1'
-    }
-
     stages {
         stage('Checkout') {
             steps {
-                script {
-                    // Checkout your code from GitHub
-                    git 'https://github.com/manasvi19/web-application.git'
-                }
+                // Checkout your code from GitHub
+                git 'https://github.com/manasvi19/web-application.git'
             }
         }
 
-        stage('Build') {
+        stage('Restore Packages') {
             steps {
-                script {
-                    // Build your ASP.NET Core app
-                    sh 'dotnet restore'
-                    sh 'dotnet build program.cs --configuration Release'
-                }
+                // Restore NuGet packages
+                sh 'dotnet restore'
             }
         }
 
-        stage('Publish') {
+        stage('Build with MSBuild') {
             steps {
-                script {
-                    // Publish your app
-                    sh 'dotnet publish program.cs --configuration Release --output ./publish'
-                }
-            }
-        }
-
-        stage('Display URL') {
-            steps {
-                script {
-                    def serverUrl = 'http://localhost:5146' // Adjust the port as needed
-                    echo "Published website URL: ${serverUrl}"
-                }
+                // Use MSBuild to build the solution
+                withMSBuild(
+                    msBuildName: 'MSBuild', // Name of your MSBuild installation in Jenkins
+                    msBuildFile: 'Webapplication1.sln',
+                    targets: 'Build',
+                    properties: [
+                        'Configuration=Release'
+                    ]
+                )
             }
         }
     }
