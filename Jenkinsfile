@@ -10,7 +10,7 @@ pipeline {
             steps {
                 script {
                     // Checkout your code from GitHub
-                    git 'https://github.com/yourusername/your-repo.git'
+                    git 'https://github.com/manasvi19/web-application.git'
                 }
             }
         }
