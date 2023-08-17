@@ -10,7 +10,7 @@ pipeline {
             steps {
                 script {
                     // Checkout your code from GitHub
-                    git 'https://github.com/manasvi19/web-application.git'
+                    git 'https://github.com/yourusername/your-repo.git'
                 }
             }
         }
@@ -19,8 +19,8 @@ pipeline {
             steps {
                 script {
                     // Build your ASP.NET Core app
-                    bat 'dotnet restore'
-                    bat 'dotnet build --configuration Release'
+                    sh 'dotnet restore'
+                    sh 'dotnet build Webapplication1.csproj --configuration Release'
                 }
             }
         }
@@ -29,7 +29,7 @@ pipeline {
             steps {
                 script {
                     // Publish your app
-                    bat 'dotnet publish --configuration Release --output ./publish'
+                    sh 'dotnet publish Webapplication1.csproj --configuration Release --output ./publish'
                 }
             }
         }
@@ -37,7 +37,7 @@ pipeline {
         stage('Display URL') {
             steps {
                 script {
-                    def serverUrl = 'http://localhost:5146' // Change this to your server URL
+                    def serverUrl = 'http://localhost:5146' // Adjust the port as needed
                     echo "Published website URL: ${serverUrl}"
                 }
             }
