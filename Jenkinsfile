@@ -4,29 +4,20 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                // Checkout your code from GitHub
-                git 'https://github.com/manasvi19/web-application.git'
+                checkout scm
             }
         }
-
-        stage('Restore Packages') {
+        
+        stage('Build') {
             steps {
-                // Restore NuGet packages
                 sh 'dotnet restore'
+                sh 'dotnet build --configuration Release'
             }
         }
-
-        stage('Build with MSBuild') {
+        
+        stage('Publish') {
             steps {
-                // Use MSBuild to build the solution
-                withMSBuild(
-                    msBuildName: 'MSBuild', // Name of your MSBuild installation in Jenkins
-                    msBuildFile: 'Webapplication1.sln',
-                    targets: 'Build',
-                    properties: [
-                        'Configuration=Release'
-                    ]
-                )
+                sh 'dotnet publish --configuration Release --output ./publish'
             }
         }
     }
