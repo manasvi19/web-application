@@ -33,7 +33,7 @@ pipeline {
                 script {
                     // Change this to the correct path to your published app
                     def appPath = '/Users/manasvidhankani/Downloads/WebApplication1/publish'
-                    def port = 5000 // Change to your app's port
+                    def port = 5146 // Change to your app's port
                     
                     sh "cd ${appPath}"
                     sh "dotnet Webapplication1.dll &"
