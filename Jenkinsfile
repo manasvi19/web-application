@@ -2,6 +2,13 @@ pipeline {
     agent any
 
     stages {
+        // Add the deleteDir() command here to clear the workspace
+        stage('Preparation') {
+            steps {
+                deleteDir() // Clear the workspace before each build
+            }
+        }
+
         stage('Checkout') {
             steps {
                 checkout scm
