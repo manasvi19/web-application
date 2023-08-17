@@ -20,7 +20,7 @@ pipeline {
                 script {
                     // Build your ASP.NET Core app
                     sh 'dotnet restore'
-                    sh 'dotnet build Webapplication1.csproj --configuration Release'
+                    sh 'dotnet build program.cs --configuration Release'
                 }
             }
         }
@@ -29,7 +29,7 @@ pipeline {
             steps {
                 script {
                     // Publish your app
-                    sh 'dotnet publish Webapplication1.csproj --configuration Release --output ./publish'
+                    sh 'dotnet publish program.cs --configuration Release --output ./publish'
                 }
             }
         }
