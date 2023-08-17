@@ -1,0 +1,14 @@
+# .gitignore
+bin/
+obj/
+.vscode/
+.idea/
+*.suo
+*.user
+*.log
+*.vspscc
+*.vssscc
+/node_modules/
+/appsettings.json
+/wwwroot/
+/publish/
