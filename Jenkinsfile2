@@ -13,39 +13,33 @@ pipeline {
                 checkout scm
             }
         }
-
+        
         stage('Build') {
             steps {
                 sh 'dotnet restore'
                 sh 'dotnet build --configuration Release'
             }
         }
-
+        
         stage('Publish') {
             steps {
                 sh 'dotnet publish --configuration Release --output ./publish'
             }
         }
-
+        
         stage('Deploy to EC2') {
-            agent { label 'your-ec2-agent-label' } // Use the label of your EC2 agent
-
             steps {
-                // You might need to add additional steps to copy files to your EC2 instance
-                sh 'scp -i /path/to/your/private/key -r ./publish ec2-user@<ec2-instance-ip>:/path/on/ec2/server'
+                sh "scp -i /Users/manasvidhankani/Downloads/awstest.pem -r ./publish ec2-user@54.198.71.202:/Users/manasvidhankani/Downloads
+
             }
         }
-
-        stage('Run App and Open URL') {
+        
+        stage('Run App on EC2') {
             steps {
                 script {
-                    // Change this to the correct path on your EC2 instance
-                    def appPath = '/path/on/ec2/server/publish'
-                    def port = 5146 // Change to your app's port
-
-                    sh "ssh -i /path/to/your/private/key ec2-user@<ec2-instance-ip> 'cd ${appPath} && nohup dotnet WebApplication1.dll &'"
-                    sh 'sleep 10'
-                    sh "open http://<ec2-instance-ip>:${port}"
+                    def appPath = '/Users/manasvidhankani/Downloads/publish'
+                    
+                    sh "ssh -i /Users/manasvidhankani/Downloads/awstest.pem ec2-user@54.198.71.202 'cd ${appPath} && nohup dotnet WebApplication1.dll &'"
                 }
             }
         }
