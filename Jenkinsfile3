@@ -39,7 +39,8 @@ pipeline {
                     def appPath = '/home/ec2-user/myapp'
                     def sshKeyPath = '/Users/manasvidhankani/Downloads/awstest.pem'
 
-                    sh "ssh -i ${sshKeyPath} ec2-user@54.198.71.202 'cd ${appPath} && nohup dotnet WebApplication1.dll &'"
+                    sh "ssh -i ${sshKeyPath} ec2-user@54.198.71.202 'cd ${appPath} && nohup /home/ec2-user/.dotnet/tools/dotnet WebApplication1.dll &'"
+
                 }
             }
         }
