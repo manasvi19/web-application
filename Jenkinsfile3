@@ -29,7 +29,7 @@ pipeline {
         
         stage('Deploy to EC2') {
             steps {
-                sh "scp -i /Users/manasvidhankani/Downloads/awstest.pem -r ./publish ec2-user@3.93.22.254:/home/ec2-user/myapp"
+                sh "scp -i /Users/manasvidhankani/Downloads/awstest.pem -r ./publish ec2-user@54.161.100.154:/home/ec2-user/myapp"
             }
         }
         
@@ -39,7 +39,7 @@ pipeline {
                     def appPath = '/home/ec2-user/myapp'
                     def sshKeyPath = '/Users/manasvidhankani/Downloads/awstest.pem'
 
-                    sh "ssh -i ${sshKeyPath} ec2-user@3.93.22.254 'cd ${appPath} && nohup /home/ec2-user/.dotnet/tools/dotnet WebApplication1.dll &'"
+                    sh "ssh -i ${sshKeyPath} ec2-user@54.161.100.154 'cd ${appPath} && nohup /home/ec2-user/.dotnet/tools/dotnet WebApplication1.dll &'"
 
                 }
             }
