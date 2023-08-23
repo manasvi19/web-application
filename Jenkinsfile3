@@ -38,7 +38,7 @@ pipeline {
                 script {
                     def appPath = '/home/ec2-user/myapp'
                     def sshKeyPath = '/Users/manasvidhankani/Downloads/awstest.pem'
-                    def dotnetPath = sh(script: "which dotnet", returnStdout: true).trim()
+                    def dotnetPath = '/usr/bin/dotnet' // Update with the correct path
 
                     sh "ssh -i ${sshKeyPath} ec2-user@54.161.100.154 'cd ${appPath} && nohup ${dotnetPath} WebApplication1.dll &'"
                 }
