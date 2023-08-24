@@ -18,7 +18,7 @@ pipeline {
         stage('Deploy to EC2') {
             steps {
                 // Use SSH to deploy your app to EC2
-                sshagent(credentials: ['your-ssh-credentials-id']) {
+                sshagent(credentials: ['8e517082-8b87-4b4f-939c-91a2fe628c65']) {
                     sh 'ssh -i /Users/manasvidhankani/Downloads/awstest.pem ec2-user@3.94.250.151 "cd ec2-user@3.94.250.151 && git pull"'
                 }
             }
