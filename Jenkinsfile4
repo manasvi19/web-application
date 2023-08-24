@@ -11,55 +11,15 @@ pipeline {
         stage('Build') {
             steps {
                 sh 'dotnet restore'
-                sh 'dotnet build --configuration Release'
-            }
-        }
-
-        stage('Publish') {
-            steps {
-                sh 'dotnet publish --configuration Release --output ./publish'
+                sh 'dotnet build'
             }
         }
 
         stage('Deploy to EC2') {
             steps {
-                script {
-                    def remoteDirectory = '/home/ec2-user/myapp'
-                    def remoteServer = [
-                        name: 'SSHAWS', // Name of your SSH server configuration
-                        remoteDirectory: remoteDirectory,
-                        sshUser: 'ec2-user', // SSH username for the EC2 instance
-                        useWorkspaceInPromotion: false,
-                        continueOnError: false,
-                        failOnError: true,
-                        showOutput: true,
-                        clearWorkspace: false
-                    ]
-
-                    // Copy your build artifacts to the EC2 instance using "Publish Over SSH" plugin
-                    publishOverSSH(credentialsConfigurer: [$class: 'UsernameSSHKeyAuthentication', keyFileVariable: 'sshKeyPath', usernameVariable: '', passphraseVariable: '', username: 'ec2-user'], 
-                                  transfers: [[$class: 'Transfer', sourceFiles: 'publish/*', removePrefix: 'publish/', remoteDirectory: remoteDirectory]], 
-                                  remoteHost: '34.201.168.68')
-
-                    // SSH into the EC2 instance and execute deployment commands
-                    sshPublisher(configName: 'Your-SSH-Server-Config', transfers: [], sshServer: remoteServer)
-                    sshPublisher(
-                        continueOnError: false,
-                        failOnError: true,
-                        publishers: [
-                            sshPublisherDesc(
-                                configName: 'Your-SSH-Server-Config',
-                                transfers: [
-                                    sshTransfer(
-                                        sourceFiles: '',
-                                        removePrefix: '',
-                                        remoteDirectory: remoteDirectory,
-                                        execCommand: "cd ${remoteDirectory} && dotnet WebApplication1.dll"
-                                    )
-                                ]
-                            )
-                        ]
-                    )
+                // Use SSH to deploy your app to EC2
+                sshagent(credentials: ['your-ssh-credentials-id']) {
+                    sh 'ssh -i /Users/manasvidhankani/Downloads/awstest.pem ec2-user@3.94.250.151 "cd ec2-user@3.94.250.151 && git pull"'
                 }
             }
         }
