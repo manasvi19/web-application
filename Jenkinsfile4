@@ -32,7 +32,7 @@ pipeline {
                     sh "scp -i ${sshKeyPath} -r ./publish ec2-user@${ec2InstanceIP}:${remoteDirectory}"
                     
                     // SSH into the EC2 instance and execute deployment commands
-                    sh "ssh -i ${sshKeyPath} ec2-user@${ec2InstanceIP} 'cd ${remoteDirectory} && dotnet run'"
+                    sh "ssh -i ${sshKeyPath} ec2-user@${ec2InstanceIP} 'cd ${remoteDirectory} && dotnet WebApplication1.dll'"
                 }
             }
         }
