@@ -1,0 +1,27 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+        
+        stage('Deploy to EC2') {
+            steps {
+                script {
+                    def sshKeyPath = '/Users/manasvidhankani/Downloads/awstest.pem'
+                    def ec2InstanceIP = '34.201.168.68'
+                    def remoteDirectory = '/home/ec2-user/myapp'
+
+                    // Copy your build artifacts to the EC2 instance using SCP
+                    sh "scp -i ${sshKeyPath} -r ./publish ec2-user@${ec2InstanceIP}:${remoteDirectory}"
+                    
+                    // SSH into the EC2 instance and execute deployment commands
+                    sh "ssh -i ${sshKeyPath} ec2-user@${ec2InstanceIP} 'cd ${remoteDirectory} && dotnet run'"
+                }
+            }
+        }
+    }
+}
