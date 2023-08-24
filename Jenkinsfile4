@@ -24,15 +24,42 @@ pipeline {
         stage('Deploy to EC2') {
             steps {
                 script {
-                    def sshKeyPath = '/Users/manasvidhankani/.ssh/id_rsa'
-                    def ec2InstanceIP = '34.201.168.68'
                     def remoteDirectory = '/home/ec2-user/myapp'
+                    def remoteServer = [
+                        name: 'SSHAWS', // Name of your SSH server configuration
+                        remoteDirectory: remoteDirectory,
+                        sshUser: 'ec2-user', // SSH username for the EC2 instance
+                        useWorkspaceInPromotion: false,
+                        continueOnError: false,
+                        failOnError: true,
+                        showOutput: true,
+                        clearWorkspace: false
+                    ]
 
-                    // Copy your build artifacts to the EC2 instance using SCP
-                    sh "scp -i ${sshKeyPath} -r ./publish ec2-user@${ec2InstanceIP}:${remoteDirectory}"
-                    
+                    // Copy your build artifacts to the EC2 instance using "Publish Over SSH" plugin
+                    publishOverSSH(credentialsConfigurer: [$class: 'UsernameSSHKeyAuthentication', keyFileVariable: 'sshKeyPath', usernameVariable: '', passphraseVariable: '', username: 'ec2-user'], 
+                                  transfers: [[$class: 'Transfer', sourceFiles: 'publish/*', removePrefix: 'publish/', remoteDirectory: remoteDirectory]], 
+                                  remoteHost: '34.201.168.68')
+
                     // SSH into the EC2 instance and execute deployment commands
-                    sh "ssh -i ${sshKeyPath} ec2-user@${ec2InstanceIP} 'cd ${remoteDirectory} && dotnet WebApplication1.dll'"
+                    sshPublisher(configName: 'Your-SSH-Server-Config', transfers: [], sshServer: remoteServer)
+                    sshPublisher(
+                        continueOnError: false,
+                        failOnError: true,
+                        publishers: [
+                            sshPublisherDesc(
+                                configName: 'Your-SSH-Server-Config',
+                                transfers: [
+                                    sshTransfer(
+                                        sourceFiles: '',
+                                        removePrefix: '',
+                                        remoteDirectory: remoteDirectory,
+                                        execCommand: "cd ${remoteDirectory} && dotnet WebApplication1.dll"
+                                    )
+                                ]
+                            )
+                        ]
+                    )
                 }
             }
         }
